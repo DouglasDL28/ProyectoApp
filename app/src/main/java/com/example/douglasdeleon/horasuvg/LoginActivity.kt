@@ -23,8 +23,11 @@ import android.widget.TextView
 
 import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
+import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_login.*
+import com.google.firebase.auth.FirebaseAuth
+
 
 /**
  * A login screen that offers login via email/password.
@@ -34,10 +37,14 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private var mAuthTask: UserLoginTask? = null
+    private var mFirebaseAuth: FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        //Inicializa FireBase
+        mFirebaseAuth = FirebaseAuth.getInstance();
         // Set up the login form.
         populateAutoComplete()
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
@@ -140,17 +147,25 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             showProgress(true)
             mAuthTask = UserLoginTask(emailStr, passwordStr)
             mAuthTask!!.execute(null as Void?)
+
+            mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener{
+                if (it.isSuccessful){
+                    Toast.makeText(this,"Se ha iniciado sesión correctamente",Toast.LENGTH_LONG).show()
+                }else{
+                    Toast.makeText(this,"No se ha iniciado sesión, revisa tus datos",Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
     private fun isEmailValid(email: String): Boolean {
         //TODO: Replace this with your own logic
-        return email.contains("@")
+        return email.contains("@uvg.edu.gt")
     }
 
     private fun isPasswordValid(password: String): Boolean {
         //TODO: Replace this with your own logic
-        return password.length > 4
+        return password.length > 8
     }
 
     /**
