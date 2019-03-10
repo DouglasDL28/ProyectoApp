@@ -8,14 +8,12 @@ import android.os.Bundle
 
 import android.provider.MediaStore
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_admin_register.*
 import kotlinx.android.synthetic.main.activity_student_register.*
 import android.text.TextUtils
 import android.view.View
-import android.widget.Toast
+
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_student_register.*
 
 class StudentRegisterActivity : AppCompatActivity() {
     val PICK_PHOTO_CODE = 1046
@@ -61,7 +59,7 @@ class StudentRegisterActivity : AppCompatActivity() {
         //Inicializa FireBase
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        ok_button.setOnClickListener {
+        okbutton.setOnClickListener {
             register()
         }
     }

@@ -12,12 +12,10 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_admin_register.*
 import kotlinx.android.synthetic.main.activity_login.*
 import android.provider.MediaStore
-import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_admin_register.*
 
 class AdminRegisterActivity : AppCompatActivity() {
     val PICK_PHOTO_CODE = 1046
-
+    private var mFirebaseAuth: FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         var RESULT_LOAD_IMAGE:Int =1;
@@ -38,15 +36,7 @@ class AdminRegisterActivity : AppCompatActivity() {
                 startActivityForResult(intent, PICK_PHOTO_CODE)
             }
         }
-    
 
-
-        //Inicializa FireBase
-        mFirebaseAuth = FirebaseAuth.getInstance();
-
-        ok_button.setOnClickListener {
-            register()
-        }
     }
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -59,7 +49,14 @@ class AdminRegisterActivity : AppCompatActivity() {
 
             adminImageUpload.setImageBitmap(selectedImage);
             Toast.makeText(this@AdminRegisterActivity, "Imagen cargada con éxito.. ", Toast.LENGTH_SHORT).show();
+            //Inicializa FireBase
+            mFirebaseAuth = FirebaseAuth.getInstance();
+
+            okbuttona.setOnClickListener {
+                register()
+            }
         }
+    }
     private fun register()  {
         val emailStr = admin_mail_textview.text.toString()
         val passwordStr = admin_password_textview.text.toString()

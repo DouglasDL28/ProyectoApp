@@ -65,12 +65,12 @@
             android:background="@android:color/white"
             app:layout_constraintTop_toBottomOf="@+id/student_password_textview"
             android:layout_marginBottom="32dp" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/ok_button" app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintBottom_toTopOf="@+id/okbutton" app:layout_constraintStart_toStartOf="parent"/>
     <Button
             android:text="Listo"
             android:layout_width="114dp"
             android:layout_height="0dp"
-            android:id="@+id/ok_button"
+            android:id="@+id/okbutton"
             android:background="@android:color/black" android:textSize="18sp" android:textColor="@android:color/white"
             app:layout_constraintTop_toBottomOf="@+id/career_spinner" android:layout_marginBottom="35dp"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
