@@ -28,6 +28,7 @@ class AdminRegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_register)
 
+        //Código para funcionalidad del spinner de departamentos.
         spinner = findViewById(R.id.departments_spinner)
         val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(this@AdminRegisterActivity, R.array.departamentos , R.layout.support_simple_spinner_dropdown_item )
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
