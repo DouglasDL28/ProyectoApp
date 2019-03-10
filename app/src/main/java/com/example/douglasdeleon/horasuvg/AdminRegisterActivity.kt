@@ -12,15 +12,35 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_admin_register.*
 import kotlinx.android.synthetic.main.activity_login.*
 import android.provider.MediaStore
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 
 class AdminRegisterActivity : AppCompatActivity() {
+
+
     val PICK_PHOTO_CODE = 1046
     private var mFirebaseAuth: FirebaseAuth? = null
+    lateinit var spinner: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         var RESULT_LOAD_IMAGE:Int =1;
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_register)
+
+        spinner = findViewById(R.id.departments_spinner)
+        val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(this@AdminRegisterActivity, R.array.departamentos , R.layout.support_simple_spinner_dropdown_item )
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                var text: String = parent!!.getItemAtPosition(position).toString()
+            }
+        }
 
         adminImageUpload.setOnClickListener {
 
