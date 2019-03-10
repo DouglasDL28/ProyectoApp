@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        
+
         //Inicializa FireBase
         mFirebaseAuth = FirebaseAuth.getInstance();
         // Set up the login form.
