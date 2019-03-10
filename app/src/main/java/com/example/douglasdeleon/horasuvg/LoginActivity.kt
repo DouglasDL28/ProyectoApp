@@ -23,6 +23,7 @@ import android.widget.TextView
 
 import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
+import android.content.Intent
 import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_login.*
@@ -42,7 +43,8 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
+        val intent = Intent(this@LoginActivity, LoggedIn::class.java)
+        startActivity(intent)
         //Inicializa FireBase
         mFirebaseAuth = FirebaseAuth.getInstance();
         // Set up the login form.
