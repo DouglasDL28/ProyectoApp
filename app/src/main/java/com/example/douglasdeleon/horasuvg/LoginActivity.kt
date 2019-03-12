@@ -23,11 +23,16 @@ import android.widget.TextView
 
 import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.provider.MediaStore
+import android.support.v7.app.AlertDialog
 import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_login.*
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_student_register.*
 
 
 /**
@@ -55,8 +60,13 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             }
             false
         })
-
+        forgotPassword.setOnClickListener {
+                forgotPass()
+        }
         email_sign_in_button.setOnClickListener { attemptLogin() }
+        register_button.setOnClickListener {
+            val intent: Intent = Intent(this, RegisterActivity::class.java);
+            startActivity(intent); }
     }
 
     private fun populateAutoComplete() {
@@ -104,6 +114,32 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
+    private fun forgotPass() {
+
+        val emailStr = email.text.toString()
+        // Check for a valid email address.
+        var cancel=false
+        if (emailStr=="") {
+            email.error = "Este campo es requerido"
+
+            cancel = true
+        } else if (!isEmailValid(emailStr)) {
+            email.error = "Este correo es inválido"
+
+            cancel = true
+        }
+        if(cancel) {
+            Toast.makeText(this@LoginActivity, "Correo no válido.", Toast.LENGTH_LONG).show()
+        }else {
+            mFirebaseAuth!!.sendPasswordResetEmail(emailStr)
+                .addOnCompleteListener() {
+                    Toast.makeText(this@LoginActivity, "Correo enviado satisfactoriamente", Toast.LENGTH_LONG).show()
+                }
+
+
+        }
+    }
+
     private fun attemptLogin() {
         if (mAuthTask != null) {
             return
@@ -121,19 +157,19 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         var focusView: View? = null
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(passwordStr) && !isPasswordValid(passwordStr)) {
-            password.error = getString(R.string.error_invalid_password)
+        if (passwordStr=="" && !isPasswordValid(passwordStr)) {
+            password.error = "Esta contraseña es inválida"
             focusView = password
             cancel = true
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(emailStr)) {
-            email.error = getString(R.string.error_field_required)
+        if (emailStr=="") {
+            email.error = "Este campo es requerido"
             focusView = email
             cancel = true
         } else if (!isEmailValid(emailStr)) {
-            email.error = getString(R.string.error_invalid_email)
+            email.error = "Este correo es inválido"
             focusView = email
             cancel = true
         }
@@ -141,6 +177,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
+
             focusView?.requestFocus()
         } else {
             // Show a progress spinner, and kick off a background task to
@@ -148,14 +185,44 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             showProgress(true)
             mAuthTask = UserLoginTask(emailStr, passwordStr)
             mAuthTask!!.execute(null as Void?)
+            mFirebaseAuth!!.signInWithEmailAndPassword(emailStr,passwordStr).addOnFailureListener(){
 
+
+
+                val builder = AlertDialog.Builder(this)
+
+                // Enviar alerta
+                builder.setTitle("Error")
+
+                // Mostrar mensaje de alerta si los datos no son validos
+                builder.setMessage("No se ha iniciado sesión, revisa tus datos")
+                builder.setPositiveButton("Ok"){dialog, which ->
+
+                }
+
+                builder.show()
+
+
+
+
+
+
+
+            }
             mFirebaseAuth!!.signInWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener{
                 if (it.isSuccessful){
-                    Toast.makeText(this,"Se ha iniciado sesión correctamente",Toast.LENGTH_LONG).show()
-                }else{
-                    Toast.makeText(this,"No se ha iniciado sesión, revisa tus datos",Toast.LENGTH_LONG).show()
+
+
+
+                    val intent: Intent = Intent(this, LoggedIn::class.java);
+                    startActivity(intent);
+                    Toast.makeText(this@LoginActivity,"Se ha iniciado sesión correctamente",Toast.LENGTH_LONG).show()
                 }
+
             }
+
+
+
         }
     }
 
@@ -166,7 +233,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
 
     private fun isPasswordValid(password: String): Boolean {
         //TODO: Replace this with your own logic
-        return password.length > 8
+        return password.isNotEmpty()
     }
 
     /**
@@ -294,7 +361,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             showProgress(false)
 
             if (success!!) {
-                finish()
+
             } else {
                 password.error = getString(R.string.error_incorrect_password)
                 password.requestFocus()

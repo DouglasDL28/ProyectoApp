@@ -1,5 +1,6 @@
 package com.example.douglasdeleon.horasuvg
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
@@ -8,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_logged_in.*
 import kotlinx.android.synthetic.main.app_bar_logged_in.*
 
@@ -33,7 +35,7 @@ class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+
         }
     }
 
@@ -56,7 +58,9 @@ class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             }
 
             R.id.nav_logout -> {
-
+                val intent: Intent = Intent(this, LoginActivity::class.java);
+                startActivity(intent);
+                Toast.makeText(this, "Sesión cerrada correctamente.", Toast.LENGTH_LONG).show()
             }
             R.id.nav_settings -> {
 

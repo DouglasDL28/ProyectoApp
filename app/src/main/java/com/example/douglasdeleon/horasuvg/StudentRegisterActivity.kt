@@ -7,15 +7,18 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 
 import android.provider.MediaStore
+import android.support.v7.app.AlertDialog
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_student_register.*
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_admin_register.*
 import kotlinx.android.synthetic.main.activity_login.*
 
 class StudentRegisterActivity : AppCompatActivity() {
@@ -56,6 +59,13 @@ class StudentRegisterActivity : AppCompatActivity() {
                 // Bring up gallery to select a photo
                 startActivityForResult(intent, PICK_PHOTO_CODE)
             }
+
+        }
+        //Inicializa FireBase
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
+        okbutton.setOnClickListener {
+            register()
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -72,53 +82,89 @@ class StudentRegisterActivity : AppCompatActivity() {
         }
 
 
-        //Inicializa FireBase
-        mFirebaseAuth = FirebaseAuth.getInstance();
 
-        okbutton.setOnClickListener {
-            register()
-        }
     }
 
     private fun register()  {
-
         val emailStr = student_mail_textview.text.toString()
         val passwordStr = student_password_textview.text.toString()
 
         var cancel = false
-        var focusView: View? = null
+        var message = ""
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(passwordStr) && !isPasswordValid(passwordStr)) {
-            password.error = getString(R.string.error_invalid_password)
-            focusView = password
+        if (!isPasswordValid(passwordStr)) {
+
+            message="La contraseña debe contener al menos 8 dígitos."
+            cancel = true
+        }else if(passwordStr==""){
+            message="La contraseña no puede estar vacía."
             cancel = true
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(emailStr)) {
-            email.error = getString(R.string.error_field_required)
-            focusView = email
+        if (emailStr=="") {
+
+            message="El correo no puede estar vacío."
             cancel = true
         } else if (!isEmailValid(emailStr)) {
-            email.error = getString(R.string.error_invalid_email)
-            focusView = email
+            message="El correo no puede estar vacío."
+
+
             cancel = true
         }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
-            focusView?.requestFocus()
+            // Initialize a new instance of
+            val builder = AlertDialog.Builder(this@StudentRegisterActivity)
+
+            // Enviar alerta
+            builder.setTitle("Error")
+
+            // Mostrar mensaje de alerta si los datos no son validos
+            builder.setMessage("$message")
+            builder.setPositiveButton("Ok"){dialog, which ->
+
+            }
+            builder.show()
+
         } else {
             mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener{
                 if (it.isSuccessful){
-                    Toast.makeText(this,"Se ha creado el usuario correctamente", Toast.LENGTH_LONG).show()
-                }else{
-                    Toast.makeText(this,"No se ha podido crear el usuario, revisa tus datos", Toast.LENGTH_LONG).show()
+
+                    Toast.makeText(this@StudentRegisterActivity,"Se ha creado el usuario correctamente", Toast.LENGTH_LONG).show()
+                    val intent2 = Intent(this@StudentRegisterActivity, LoginActivity::class.java);
+                    startActivity(intent2);
                 }
             }
+            mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr,passwordStr).addOnFailureListener(){
+
+
+
+                val builder = AlertDialog.Builder(this)
+
+                // Enviar alerta
+                builder.setTitle("Error")
+
+                // Mostrar mensaje de alerta si los datos no son validos
+                builder.setMessage("Correo ingresado ya existe como usuario. Intente con otro correo.")
+                builder.setPositiveButton("Ok"){dialog, which ->
+
+                }
+
+                builder.show()
+
+
+
+
+
+
+
+            }
         }
+
     }
 
     private fun isEmailValid(email: String): Boolean {
@@ -128,7 +174,7 @@ class StudentRegisterActivity : AppCompatActivity() {
 
     private fun isPasswordValid(password: String): Boolean {
         //TODO: Replace this with your own logic
-        return password.length > 8
+        return password.length >= 8
 
     }
 }
