@@ -22,6 +22,8 @@
 
     <ImageView
             android:layout_width="450dp"
+            android:layout_height="100dp" app:srcCompat="@drawable/uvg" android:id="@+id/imageView"/>
+
     <ScrollView
             android:id="@+id/login_form"
             android:layout_width="match_parent"
