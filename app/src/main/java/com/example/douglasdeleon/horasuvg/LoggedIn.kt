@@ -10,8 +10,10 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.example.douglasdeleon.horasuvg.Model.MyApplication
 import kotlinx.android.synthetic.main.activity_logged_in.*
 import kotlinx.android.synthetic.main.app_bar_logged_in.*
+import kotlinx.android.synthetic.main.nav_header_logged_in.*
 
 class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -19,7 +21,8 @@ class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_logged_in)
         setSupportActionBar(toolbar)
-
+        name.text=MyApplication.userInside.name
+        email.text =MyApplication.userInside.email
 
 
         val toggle = ActionBarDrawerToggle(

@@ -16,8 +16,11 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import com.example.douglasdeleon.horasuvg.Model.User
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_admin_register.*
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -88,7 +91,7 @@ class StudentRegisterActivity : AppCompatActivity() {
     private fun register()  {
         val emailStr = student_mail_textview.text.toString()
         val passwordStr = student_password_textview.text.toString()
-
+        val nameStr = student_name_textview.text.toString()
         var cancel = false
         var message = ""
 
@@ -99,6 +102,9 @@ class StudentRegisterActivity : AppCompatActivity() {
             cancel = true
         }else if(passwordStr==""){
             message="La contraseña no puede estar vacía."
+            cancel = true
+        }else if(nameStr==""){
+            message="El nombre no puede estar vacío."
             cancel = true
         }
 
@@ -133,6 +139,8 @@ class StudentRegisterActivity : AppCompatActivity() {
         } else {
             mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener{
                 if (it.isSuccessful){
+                    var newUser: User = User(nameStr,emailStr,1)
+                    FirebaseFirestore.getInstance().collection("users").document(mFirebaseAuth!!.currentUser!!.uid).set(newUser);
 
                     Toast.makeText(this@StudentRegisterActivity,"Se ha creado el usuario correctamente", Toast.LENGTH_LONG).show()
                     val intent2 = Intent(this@StudentRegisterActivity, LoginActivity::class.java);

@@ -26,12 +26,22 @@ import android.Manifest.permission.READ_CONTACTS
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.support.v7.app.AlertDialog
 import android.widget.Toast
+import com.example.douglasdeleon.horasuvg.Model.MyApplication
+import com.example.douglasdeleon.horasuvg.Model.User
+import com.example.douglasdeleon.horasuvg.Model.UserInside
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 
 import kotlinx.android.synthetic.main.activity_login.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_student_register.*
 
 
@@ -44,12 +54,13 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
      */
     private var mAuthTask: UserLoginTask? = null
     private var mFirebaseAuth: FirebaseAuth? = null
-
+    val db:FirebaseFirestore = FirebaseFirestore.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         //Inicializa FireBase
+
         mFirebaseAuth = FirebaseAuth.getInstance();
         // Set up the login form.
         populateAutoComplete()
@@ -211,6 +222,15 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             }
             mFirebaseAuth!!.signInWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener{
                 if (it.isSuccessful){
+                    MyApplication.userInsideId = mFirebaseAuth!!.currentUser!!.uid
+
+
+                      
+
+
+
+
+
 
 
 
