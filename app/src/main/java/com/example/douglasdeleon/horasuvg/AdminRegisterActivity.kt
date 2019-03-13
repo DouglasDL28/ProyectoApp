@@ -13,9 +13,11 @@ import kotlinx.android.synthetic.main.activity_admin_register.*
 import kotlinx.android.synthetic.main.activity_login.*
 import android.provider.MediaStore
 import android.support.v7.app.AlertDialog
+import android.text.Editable
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import com.example.douglasdeleon.horasuvg.Model.MyApplication
 import com.example.douglasdeleon.horasuvg.Model.User
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,12 +28,21 @@ class AdminRegisterActivity : AppCompatActivity() {
     val PICK_PHOTO_CODE = 1046
     private var mFirebaseAuth: FirebaseAuth? = null
     lateinit var spinner: Spinner
-
+    var edit_message="";
     override fun onCreate(savedInstanceState: Bundle?) {
         var RESULT_LOAD_IMAGE:Int =1;
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_register)
+        if(MyApplication.userInsideId==""){
+            edit_message="Usuario creado correctamente."
+            okbuttona.text="Listo"
+        }else{
+            edit_message="Cambios en usuario realizados correctamente."
+            okbuttona.text="Actualizar"
 
+
+
+        }
         //Código para funcionalidad del spinner de departamentos.
         spinner = findViewById(R.id.departments_spinner)
         val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(this@AdminRegisterActivity, R.array.departamentos , R.layout.support_simple_spinner_dropdown_item )
@@ -88,6 +99,7 @@ class AdminRegisterActivity : AppCompatActivity() {
         val emailStr = admin_mail_textview.text.toString()
         val passwordStr = admin_password_textview.text.toString()
         val nameStr = admin_name_textview3.text.toString()
+        val token = admin_token_textview.text.toString()
         var email=false;
         var cancel = false
         var message = ""
@@ -115,6 +127,9 @@ class AdminRegisterActivity : AppCompatActivity() {
 
 
             cancel = true
+        } else if(token!="adminHorasUvg"){
+            cancel=true
+            message="Usted no tiene un token valido para ser un administrador."
         }
 
         if (cancel) {
@@ -138,8 +153,15 @@ class AdminRegisterActivity : AppCompatActivity() {
             mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr, passwordStr).addOnCompleteListener {
                 if (it.isSuccessful) {
                     var newUser: User = User(nameStr,emailStr,2)
-                    FirebaseFirestore.getInstance().collection("users").document(mFirebaseAuth!!.currentUser!!.uid).set(newUser);
-                    Toast.makeText(this, "Se ha creado el usuario correctamente", Toast.LENGTH_LONG).show()
+                    if(MyApplication.userInsideId=="") {
+                        FirebaseFirestore.getInstance().collection("users").document(mFirebaseAuth!!.currentUser!!.uid)
+                            .set(newUser);
+                    }else{
+                        FirebaseFirestore.getInstance().collection("users").document(MyApplication.userInsideId)
+                            .set(newUser);
+                    }
+                    Toast.makeText(this, "$edit_message", Toast.LENGTH_LONG).show()
+                    MyApplication.userInsideId=""
                     val intent = Intent(this, LoginActivity::class.java);
                     startActivity(intent);
                 }

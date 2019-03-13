@@ -8,14 +8,13 @@ import android.os.Bundle
 
 import android.provider.MediaStore
 import android.support.v7.app.AlertDialog
-import android.widget.Toast
+import android.text.Editable
 import kotlinx.android.synthetic.main.activity_student_register.*
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.*
+import com.example.douglasdeleon.horasuvg.Model.MyApplication
 import com.example.douglasdeleon.horasuvg.Model.User
 
 import com.google.firebase.auth.FirebaseAuth
@@ -30,12 +29,21 @@ class StudentRegisterActivity : AppCompatActivity() {
     lateinit var spinner: Spinner
 
     private var mFirebaseAuth: FirebaseAuth? = null
-
+    var edit_message =""
     override fun onCreate(savedInstanceState: Bundle?) {
         var RESULT_LOAD_IMAGE:Int =1;
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_register)
+        if(MyApplication.userInsideId==""){
+            edit_message="Usuario creado correctamente."
+            okbutton.text="Listo"
+        }else{
+            edit_message="Cambios en usuario realizados correctamente."
+            okbutton.text="Actualizar"
+            
 
+
+        }
         //Código para funcionalidad del spinner de carreras.
         spinner = findViewById(R.id.career_spinner)
         val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(this@StudentRegisterActivity, R.array.carreras , R.layout.support_simple_spinner_dropdown_item )
@@ -140,9 +148,15 @@ class StudentRegisterActivity : AppCompatActivity() {
             mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener{
                 if (it.isSuccessful){
                     var newUser: User = User(nameStr,emailStr,1)
-                    FirebaseFirestore.getInstance().collection("users").document(mFirebaseAuth!!.currentUser!!.uid).set(newUser);
-
-                    Toast.makeText(this@StudentRegisterActivity,"Se ha creado el usuario correctamente", Toast.LENGTH_LONG).show()
+                    if(MyApplication.userInsideId=="") {
+                        FirebaseFirestore.getInstance().collection("users").document(mFirebaseAuth!!.currentUser!!.uid)
+                            .set(newUser);
+                    }else{
+                        FirebaseFirestore.getInstance().collection("users").document(MyApplication.userInsideId)
+                            .set(newUser);
+                    }
+                    Toast.makeText(this@StudentRegisterActivity,"$edit_message", Toast.LENGTH_LONG).show()
+                    MyApplication.userInsideId=""
                     val intent2 = Intent(this@StudentRegisterActivity, LoginActivity::class.java);
                     startActivity(intent2);
                 }

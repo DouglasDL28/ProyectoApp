@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.*
 internal class MyApplication : Application() {
 
     companion object {
-        lateinit var userInsideId:String
+        var userInsideId:String =""
         lateinit var userInside:UserInside
     }
 }
