@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.nav_header_logged_in.*
 import android.R.id.*
 import kotlinx.android.synthetic.main.nav_header_logged_in.view.*
 import android.R.*
-
+import android.support.v4.app.Fragment
 
 
 class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -43,13 +43,24 @@ class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         emailText.text= MyApplication.userInside.email
         nameText.text= MyApplication.userInside.name
 
+        var fragment: Fragment = Start()
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.content_frame, fragment)
+            .commit()
     }
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
-        } else {
-
+        } else if (supportFragmentManager.findFragmentById(R.id.content_frame)  is Start) {
+            super.onBackPressed()
+        }else{
+            var fragment: Fragment = Start()
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit()
         }
     }
 
@@ -65,12 +76,18 @@ class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_hours -> {
-                // Handle the camera action
+
             }
             R.id.nav_activities -> {
 
             }
-
+            R.id.nav_create_event -> {
+                var fragment: Fragment = AdminCreateEvent()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.content_frame, fragment)
+                    .commit()
+            }
             R.id.nav_logout -> {
                 val intent: Intent = Intent(this, LoginActivity::class.java);
                 startActivity(intent);
