@@ -16,6 +16,6 @@ internal class MyApplication : Application() {
 
     companion object {
         lateinit var userInsideId:String
-        var userInside:UserInside = UserInside()
+        lateinit var userInside:UserInside
     }
 }

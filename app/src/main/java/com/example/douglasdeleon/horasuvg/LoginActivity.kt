@@ -28,6 +28,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.provider.Telephony
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.Toast
@@ -230,6 +231,9 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
                         .addOnSuccessListener { documentSnapshot ->
                             var user:UserInside = documentSnapshot.toObject(UserInside::class.java)!!
                             MyApplication.userInside = user
+                            Thread.sleep(100)
+                            val intent: Intent = Intent(this, LoggedIn::class.java);
+                            startActivity(intent);
                     }
                         .addOnFailureListener { exception ->
 
@@ -249,8 +253,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
 
 
 
-                    val intent: Intent = Intent(this, LoggedIn::class.java);
-                    startActivity(intent);
+
                     Toast.makeText(this@LoginActivity,"Se ha iniciado sesión correctamente",Toast.LENGTH_LONG).show()
                 }
 
