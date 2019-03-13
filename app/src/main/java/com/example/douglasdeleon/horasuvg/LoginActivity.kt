@@ -231,7 +231,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
                         .addOnSuccessListener { documentSnapshot ->
                             var user:UserInside = documentSnapshot.toObject(UserInside::class.java)!!
                             MyApplication.userInside = user
-                            Thread.sleep(100)
+
                             val intent: Intent = Intent(this, LoggedIn::class.java);
                             startActivity(intent);
                     }
