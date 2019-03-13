@@ -111,7 +111,7 @@ class AdminRegisterActivity : AppCompatActivity() {
             message="El correo no puede estar vacío."
             cancel = true
         } else if (!isEmailValid(emailStr)) {
-            message="El correo no puede estar vacío."
+            message="El correo debe ser de la UVG."
 
 
             cancel = true

@@ -29,10 +29,12 @@ import android.graphics.Bitmap
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.widget.Toast
 import com.example.douglasdeleon.horasuvg.Model.MyApplication
 import com.example.douglasdeleon.horasuvg.Model.User
 import com.example.douglasdeleon.horasuvg.Model.UserInside
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -42,6 +44,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_student_register.*
 
 
@@ -223,9 +226,21 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             mFirebaseAuth!!.signInWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener{
                 if (it.isSuccessful){
                     MyApplication.userInsideId = mFirebaseAuth!!.currentUser!!.uid
+                    db.collection("users").document(MyApplication.userInsideId).get()
+                        .addOnSuccessListener { documentSnapshot ->
+                            var user:UserInside = documentSnapshot.toObject(UserInside::class.java)!!
+                            MyApplication.userInside = user
+                    }
+                        .addOnFailureListener { exception ->
+
+                        }
 
 
-                      
+
+
+
+
+
 
 
 
