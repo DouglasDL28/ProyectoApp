@@ -186,6 +186,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         } else if (!isEmailValid(emailStr)) {
             email.error = "Este correo es inválido"
             focusView = email
+
             cancel = true
         }
 

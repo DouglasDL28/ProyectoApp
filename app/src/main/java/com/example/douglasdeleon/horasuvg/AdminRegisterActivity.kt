@@ -149,43 +149,48 @@ class AdminRegisterActivity : AppCompatActivity() {
             builder.show()
 
         } else {
-
-            mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr, passwordStr).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    var newUser: User = User(nameStr,emailStr,2)
-                    if(MyApplication.userInsideId=="") {
-                        FirebaseFirestore.getInstance().collection("users").document(mFirebaseAuth!!.currentUser!!.uid)
-                            .set(newUser);
-                    }else{
-                        FirebaseFirestore.getInstance().collection("users").document(MyApplication.userInsideId)
-                            .set(newUser);
+            if(MyApplication.userInsideId=="") {
+                mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr, passwordStr).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        var newUser: User = User(nameStr, emailStr, 2,"")
+                        if (MyApplication.userInsideId == "") {
+                            FirebaseFirestore.getInstance().collection("users")
+                                .document(mFirebaseAuth!!.currentUser!!.uid)
+                                .set(newUser);
+                        } else {
+                            FirebaseFirestore.getInstance().collection("users").document(MyApplication.userInsideId)
+                                .set(newUser);
+                        }
+                        Toast.makeText(this, "$edit_message", Toast.LENGTH_LONG).show()
+                        MyApplication.userInsideId = ""
+                        val intent = Intent(this, LoginActivity::class.java);
+                        startActivity(intent);
                     }
-                    Toast.makeText(this, "$edit_message", Toast.LENGTH_LONG).show()
-                    MyApplication.userInsideId=""
-                    val intent = Intent(this, LoginActivity::class.java);
-                    startActivity(intent);
                 }
-            }
-            mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr,passwordStr).addOnFailureListener(){
+                mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr, passwordStr).addOnFailureListener() {
 
 
+                    val builder = AlertDialog.Builder(this)
 
-                val builder = AlertDialog.Builder(this)
+                    // Enviar alerta
+                    builder.setTitle("Error")
 
-                // Enviar alerta
-                builder.setTitle("Error")
+                    // Mostrar mensaje de alerta si los datos no son validos
+                    builder.setMessage("Correo ingresado ya existe como usuario. Intente con otro correo.")
+                    builder.setPositiveButton("Ok") { dialog, which ->
 
-                // Mostrar mensaje de alerta si los datos no son validos
-                builder.setMessage("Correo ingresado ya existe como usuario. Intente con otro correo.")
-                builder.setPositiveButton("Ok"){dialog, which ->
+                    }
+
+                    builder.show()
+
 
                 }
-
-                builder.show()
-
-
-
-
+            }else{
+                mFirebaseAuth!!.currentUser!!.updateEmail(emailStr)
+                mFirebaseAuth!!.currentUser!!.updatePassword(passwordStr)
+                var newUser: User = User(nameStr,emailStr,0,"")
+                FirebaseFirestore.getInstance().collection("users").document(MyApplication.userInsideId)
+                    .set(newUser);
 
 
 

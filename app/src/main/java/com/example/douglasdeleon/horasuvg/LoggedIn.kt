@@ -18,7 +18,12 @@ import kotlinx.android.synthetic.main.nav_header_logged_in.*
 import android.R.id.*
 import kotlinx.android.synthetic.main.nav_header_logged_in.view.*
 import android.R.*
+import android.net.Uri
 import android.support.v4.app.Fragment
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.google.firebase.storage.FirebaseStorage
+import java.io.File
 
 
 class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -40,8 +45,18 @@ class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         var header = nav_view.getHeaderView(0)
         var emailText = header.findViewById<TextView>(R.id.emailUser)
         var nameText = header.findViewById<TextView>(R.id.nameUser)
+        var imageText = header.findViewById<ImageView>(R.id.imageUser)
         emailText.text= MyApplication.userInside.email
         nameText.text= MyApplication.userInside.name
+
+
+        val ref = FirebaseStorage.getInstance("gs://proyectoapp-add00.appspot.com").reference.child(MyApplication.userInsideId).downloadUrl;
+
+        var url ="https://firebasestorage.googleapis.com/v0/b/proyectoapp-add00.appspot.com/o/"+MyApplication.userInsideId.toString()+"?alt=media"
+
+        Glide.with(this@LoggedIn)
+            .load(url)
+            .into(imageText)
 
         var fragment: Fragment = Start()
         supportFragmentManager
