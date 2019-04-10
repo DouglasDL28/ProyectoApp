@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.example.douglasdeleon.horasuvg.Model.Event
+import com.example.douglasdeleon.horasuvg.Model.MyApplication
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.admin_create_event.*
@@ -91,9 +91,16 @@ class AdminCreateEvent: Fragment() {
 
             //Agregar el evento a collección "events" con ID [nameStr].
             db.collection("events")
-                .document(nameStr).set(evento)
+                .document(nameStr)
+                .set(evento)
                 .addOnSuccessListener { Log.d(TAG, "Se agregó el evento con éxito." ) }
                 .addOnFailureListener {e -> Log.d(TAG, "Ocurrió un error.", e) }
+
+            //Agregar evento a subcolección de eventos del Admin que lo creó.
+            db.collection("administrators").document(MyApplication.userInsideId)
+                .collection("adminEvents")
+                .document(nameStr)
+                .set(evento)
 
             var fragmentManager: FragmentManager = fragmentManager!!
             var fragment: Fragment = Start()
