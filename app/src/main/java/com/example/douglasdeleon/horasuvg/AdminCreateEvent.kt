@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +17,7 @@ import kotlinx.android.synthetic.main.admin_create_event.*
 
 class AdminCreateEvent: Fragment() {
 
-    private var mFirebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private var mFirebaseAuth: FirebaseAuth? = null
     var thisContext: Context? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -25,6 +25,9 @@ class AdminCreateEvent: Fragment() {
         //change R.layout.yourlayoutfilename for each of your fragments
         thisContext = container!!.context
         return inflater.inflate(com.example.douglasdeleon.horasuvg.R.layout.admin_create_event, container, false)
+
+        //Inicializa FireBase
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
     }
 
@@ -79,7 +82,7 @@ class AdminCreateEvent: Fragment() {
 
         } else {
             var newEvent: Event = Event(nameStr,descriptionStr,placeStr,dateStr)
-            db.collection("events").document().set(newEvent)
+            FirebaseFirestore.getInstance().collection("events").document().set(newEvent)
 
             var fragmentManager: FragmentManager = fragmentManager!!
             var fragment: Fragment = Start()

@@ -5,18 +5,21 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_admin_register.*
+import kotlinx.android.synthetic.main.activity_login.*
 import android.provider.MediaStore
 import android.support.v7.app.AlertDialog
+import android.text.Editable
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import com.example.douglasdeleon.horasuvg.Model.Admin
 import com.example.douglasdeleon.horasuvg.Model.MyApplication
 import com.example.douglasdeleon.horasuvg.Model.User
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AdminRegisterActivity : AppCompatActivity() {
@@ -24,14 +27,8 @@ class AdminRegisterActivity : AppCompatActivity() {
 
     val PICK_PHOTO_CODE = 1046
     private var mFirebaseAuth: FirebaseAuth? = null
-
-    //Base de datos de Cloud Firestore
-    val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     lateinit var spinner: Spinner
     var edit_message="";
-
-    var department: String = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         var RESULT_LOAD_IMAGE:Int =1;
         super.onCreate(savedInstanceState)
@@ -46,18 +43,18 @@ class AdminRegisterActivity : AppCompatActivity() {
 
 
         }
-
-
         //Código para funcionalidad del spinner de departamentos.
         spinner = findViewById(R.id.departments_spinner)
         val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(this@AdminRegisterActivity, R.array.departamentos , R.layout.support_simple_spinner_dropdown_item )
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = adapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) { }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                department = parent!!.getItemAtPosition(position).toString()
+                var text: String = parent!!.getItemAtPosition(position).toString()
             }
         }
 
@@ -76,10 +73,8 @@ class AdminRegisterActivity : AppCompatActivity() {
             }
 
         }
-
         //Inicializa FireBase
         mFirebaseAuth = FirebaseAuth.getInstance();
-
 
         okbuttona.setOnClickListener {
             register()
@@ -157,15 +152,14 @@ class AdminRegisterActivity : AppCompatActivity() {
             if(MyApplication.userInsideId=="") {
                 mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr, passwordStr).addOnCompleteListener {
                     if (it.isSuccessful) {
-                        var newAdmin: Admin = Admin(nameStr, emailStr, )
+                        var newUser: User = User(nameStr, emailStr, 2,"")
                         if (MyApplication.userInsideId == "") {
-                            db.collection("users")
+                            FirebaseFirestore.getInstance().collection("users")
                                 .document(mFirebaseAuth!!.currentUser!!.uid)
-                                .set(newAdmin)
-                            db.collection("administrators").add(newAdmin)
+                                .set(newUser);
                         } else {
-                            db.collection("users").document(MyApplication.userInsideId)
-                                .set(newAdmin)
+                            FirebaseFirestore.getInstance().collection("users").document(MyApplication.userInsideId)
+                                .set(newUser);
                         }
                         Toast.makeText(this, "$edit_message", Toast.LENGTH_LONG).show()
                         MyApplication.userInsideId = ""
@@ -189,13 +183,14 @@ class AdminRegisterActivity : AppCompatActivity() {
 
                     builder.show()
 
+
                 }
             }else{
                 mFirebaseAuth!!.currentUser!!.updateEmail(emailStr)
                 mFirebaseAuth!!.currentUser!!.updatePassword(passwordStr)
-                var newAdmin: Admin = Admin(nameStr, emailStr, department, ArrayList())
-                db.collection("administrators").document(MyApplication.userInsideId)
-                    .set(newAdmin)
+                var newUser: User = User(nameStr,emailStr,0,"")
+                FirebaseFirestore.getInstance().collection("users").document(MyApplication.userInsideId)
+                    .set(newUser);
 
 
 

@@ -96,7 +96,6 @@ class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             R.id.nav_activities -> {
 
             }
-
             R.id.nav_create_event -> {
                 var fragment: Fragment = AdminCreateEvent()
                 supportFragmentManager

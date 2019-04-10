@@ -15,6 +15,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
@@ -22,16 +23,30 @@ import android.widget.TextView
 
 import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.provider.DocumentsContract
+import android.provider.MediaStore
+import android.provider.Telephony
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.Toast
 import com.example.douglasdeleon.horasuvg.Model.MyApplication
+import com.example.douglasdeleon.horasuvg.Model.User
 import com.example.douglasdeleon.horasuvg.Model.UserInside
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 
 import kotlinx.android.synthetic.main.activity_login.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.android.synthetic.main.activity_student_register.*
 
 
 /**
@@ -43,8 +58,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
      */
     private var mAuthTask: UserLoginTask? = null
     private var mFirebaseAuth: FirebaseAuth? = null
-    val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-
+    val db:FirebaseFirestore = FirebaseFirestore.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -204,6 +218,12 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
 
                 builder.show()
 
+
+
+
+
+
+
             }
             mFirebaseAuth!!.signInWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener{
                 if (it.isSuccessful){
@@ -221,10 +241,27 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
                         }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     Toast.makeText(this@LoginActivity,"Se ha iniciado sesión correctamente",Toast.LENGTH_LONG).show()
                 }
 
             }
+
+
+
         }
     }
 
