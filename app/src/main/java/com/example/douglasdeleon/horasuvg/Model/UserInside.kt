@@ -5,7 +5,5 @@ package com.example.douglasdeleon.horasuvg.Model
       var email:String = "Email"
       var type:Int = 0
       var img:String =""
-    constructor(){}
-
 
 }

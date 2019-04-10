@@ -50,7 +50,7 @@ class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         nameText.text= MyApplication.userInside.name
 
 
-        val ref = FirebaseStorage.getInstance("gs://proyectoapp-add00.appspot.com").reference.child(MyApplication.userInsideId).downloadUrl;
+        val ref = FirebaseStorage.getInstance("gs://proyectoapp-add00.appspot.com").reference.child(MyApplication.userInsideId).downloadUrl
 
         var url ="https://firebasestorage.googleapis.com/v0/b/proyectoapp-add00.appspot.com/o/"+MyApplication.userInsideId.toString()+"?alt=media"
 
@@ -105,7 +105,7 @@ class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     .commit()
             }
             R.id.nav_logout -> {
-                MyApplication.userInsideId= "";
+                MyApplication.userInsideId= ""
                 val intent: Intent = Intent(this, LoginActivity::class.java);
                 startActivity(intent);
                 Toast.makeText(this, "Sesión cerrada correctamente.", Toast.LENGTH_LONG).show()

@@ -1,10 +1,12 @@
 package com.example.douglasdeleon.horasuvg
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,8 +80,20 @@ class AdminCreateEvent: Fragment() {
             builder.show()
 
         } else {
-            var newEvent: Event = Event(nameStr,descriptionStr,placeStr,dateStr)
-            db.collection("events").document().set(newEvent)
+//            var newEvent: Event = Event(nameStr,descriptionStr,placeStr,dateStr)
+
+            //Probar con HashMap.
+            val evento = HashMap<String, Any>()
+            evento["name"] = nameStr
+            evento["description"] = descriptionStr
+            evento["location"] = placeStr
+            evento["date"] = dateStr
+
+            //Agregar el evento a collección "events" con ID [nameStr].
+            db.collection("events")
+                .document(nameStr).set(evento)
+                .addOnSuccessListener { Log.d(TAG, "Se agregó el evento con éxito." ) }
+                .addOnFailureListener {e -> Log.d(TAG, "Ocurrió un error.", e) }
 
             var fragmentManager: FragmentManager = fragmentManager!!
             var fragment: Fragment = Start()
