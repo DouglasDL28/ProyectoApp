@@ -19,6 +19,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.TextView
+
 import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
 import android.content.Intent
@@ -26,6 +27,7 @@ import android.support.v7.app.AlertDialog
 import android.widget.Toast
 import com.example.douglasdeleon.horasuvg.Model.MyApplication
 import com.example.douglasdeleon.horasuvg.Model.UserInside
+
 import kotlinx.android.synthetic.main.activity_login.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -47,8 +49,8 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         setContentView(R.layout.activity_login)
 
         //Inicializa FireBase
-        mFirebaseAuth = FirebaseAuth.getInstance()
 
+        mFirebaseAuth = FirebaseAuth.getInstance();
         // Set up the login form.
         populateAutoComplete()
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
@@ -105,6 +107,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             }
         }
     }
+
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -201,7 +204,6 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
                 builder.show()
 
             }
-
             mFirebaseAuth!!.signInWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener{
                 if (it.isSuccessful){
                     MyApplication.userInsideId = mFirebaseAuth!!.currentUser!!.uid

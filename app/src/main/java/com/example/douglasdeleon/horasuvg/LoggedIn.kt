@@ -2,6 +2,7 @@ package com.example.douglasdeleon.horasuvg
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -13,10 +14,17 @@ import android.widget.Toast
 import com.example.douglasdeleon.horasuvg.Model.MyApplication
 import kotlinx.android.synthetic.main.activity_logged_in.*
 import kotlinx.android.synthetic.main.app_bar_logged_in.*
+import kotlinx.android.synthetic.main.nav_header_logged_in.*
+import android.R.id.*
+import kotlinx.android.synthetic.main.nav_header_logged_in.view.*
+import android.R.*
+import android.net.Uri
 import android.support.v4.app.Fragment
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
+import java.io.File
+
 
 class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -24,6 +32,8 @@ class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_logged_in)
         setSupportActionBar(toolbar)
+
+
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -108,6 +118,7 @@ class LoggedIn : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     val intent: Intent = Intent(this, AdminRegisterActivity::class.java);
                     startActivity(intent);
                 }
+
             }
         }
 
