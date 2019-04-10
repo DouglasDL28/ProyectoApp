@@ -28,7 +28,7 @@ class AdminRegisterActivity : AppCompatActivity() {
     //Base de datos de Cloud Firestore
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     lateinit var spinner: Spinner
-    var edit_message=""
+    var edit_message="";
 
     var department: String = ""
 
@@ -78,7 +78,7 @@ class AdminRegisterActivity : AppCompatActivity() {
         }
 
         //Inicializa FireBase
-        mFirebaseAuth = FirebaseAuth.getInstance()
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
 
         okbuttona.setOnClickListener {
@@ -157,40 +157,16 @@ class AdminRegisterActivity : AppCompatActivity() {
             if(MyApplication.userInsideId=="") {
                 mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr, passwordStr).addOnCompleteListener {
                     if (it.isSuccessful) {
-//                        var newAdmin: Admin = Admin(nameStr, emailStr, )
-
-                        val admin = HashMap<String,Any>()
-                        admin["name"] = nameStr
-                        admin["email"] = emailStr
-                        admin["department"] = department
-
-                        //dummyEvent para poder crear subcolleccion de eventos.
-                        val dummyEvent = HashMap<String, Any>()
-                        dummyEvent["name"] = "Ejemplo"
-                        dummyEvent["description"] = "Esto es un ejemplo."
-                        dummyEvent["location"] = " "
-                        dummyEvent["date"] = " "
-
+                        var newAdmin: Admin = Admin(nameStr, emailStr, )
                         if (MyApplication.userInsideId == "") {
-
-                            db.collection("administrators")
+                            db.collection("users")
                                 .document(mFirebaseAuth!!.currentUser!!.uid)
-                                .set(admin)
-
-                            db.collection("administrators").document(mFirebaseAuth!!.currentUser!!.uid)
-                                .collection("adminEvents")
-                                .add(dummyEvent)
-
-
+                                .set(newAdmin)
+                            db.collection("administrators").add(newAdmin)
                         } else {
-                            db.collection("administrators").document(MyApplication.userInsideId)
-                                .set(admin)
-
-                            db.collection("administrators").document(MyApplication.userInsideId)
-                                .collection("adminEvents")
-                                .add(dummyEvent)
+                            db.collection("users").document(MyApplication.userInsideId)
+                                .set(newAdmin)
                         }
-
                         Toast.makeText(this, "$edit_message", Toast.LENGTH_LONG).show()
                         MyApplication.userInsideId = ""
                         val intent = Intent(this, LoginActivity::class.java);
@@ -217,24 +193,9 @@ class AdminRegisterActivity : AppCompatActivity() {
             }else{
                 mFirebaseAuth!!.currentUser!!.updateEmail(emailStr)
                 mFirebaseAuth!!.currentUser!!.updatePassword(passwordStr)
-//                var newAdmin: Admin = Admin(nameStr, emailStr, department, ArrayList())
-
-                val admin = HashMap<String,Any>()
-                admin["name"] = nameStr
-                admin["email"] = emailStr
-                admin["department"] = department
-
-                //dummyEvent para poder crear subcolleccion de eventos.
-                val dummyEvent = HashMap<String, Any>()
-                dummyEvent["name"] = "Ejemplo"
-                dummyEvent["description"] = "Esto es un ejemplo."
-                dummyEvent["location"] = " "
-                dummyEvent["date"] = " "
-
+                var newAdmin: Admin = Admin(nameStr, emailStr, department, ArrayList())
                 db.collection("administrators").document(MyApplication.userInsideId)
-                    .set(admin)
-
-                db.collection("administrators").document(MyApplication.userInsideId).collection("adminEvents").add(dummyEvent)
+                    .set(newAdmin)
 
 
 

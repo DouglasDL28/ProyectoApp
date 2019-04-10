@@ -67,6 +67,7 @@ class StudentRegisterActivity : AppCompatActivity() {
                 // Bring up gallery to select a photo
                 startActivityForResult(intent, PICK_PHOTO_CODE)
             }
+
         }
 
         okbutton.setOnClickListener {
@@ -77,7 +78,8 @@ class StudentRegisterActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         //https://github.com/codepath/android_guides/wiki/Accessing-the-Camera-and-Stored-Media
         if (data != null) {
-            photoUri = data.getData()!!
+            photoUri = data.getData();
+            imgUpload=true
             // Do something with the photo based on Uri
             var selectedImage: Bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, photoUri);
             // Load the selected image into a preview
@@ -85,6 +87,9 @@ class StudentRegisterActivity : AppCompatActivity() {
             studentImageUpload.setImageBitmap(selectedImage);
 
         }
+
+
+
     }
 
     private fun register()  {
@@ -142,9 +147,9 @@ class StudentRegisterActivity : AppCompatActivity() {
 
         } else {
             if(MyApplication.userInsideId==""){
-            mFirebaseAuth.createUserWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener{
+            mFirebaseAuth!!.createUserWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener{
                 if (it.isSuccessful){
-                    var img = ("gs://proyectoapp-add00.appspot.com/"+mFirebaseAuth!!.currentUser!!.uid.toString())
+                    var img =("gs://proyectoapp-add00.appspot.com/"+mFirebaseAuth!!.currentUser!!.uid.toString())
 
                     val storage = FirebaseStorage.getInstance("gs://proyectoapp-add00.appspot.com")
                     val ref=storage.reference.child(mFirebaseAuth!!.currentUser!!.uid.toString())
@@ -157,53 +162,21 @@ class StudentRegisterActivity : AppCompatActivity() {
                     var newStudent: Student = Student(nameStr,emailStr,career, ArrayList(), ref.downloadUrl.toString())
                     // ImageView in your Activity
 
-                    //Nuevo estudiante para Cloud Firestore.
-                    val student = HashMap<String,Any>()
-                    student["name"] = nameStr
-                    student["email"] = emailStr
-                    student["career"] = career
-
-                    //dummyEvent para poder crear subcolleccion de eventos.
-                    val dummyEvent = HashMap<String, Any>()
-                    dummyEvent["name"] = "Ejemplo"
-                    dummyEvent["description"] = "Esto es un ejemplo."
-                    dummyEvent["location"] = " "
-                    dummyEvent["date"] = " "
-
-
-                    //Agregar estudiante a colección de Users.
-                    db.collection("students").document(MyApplication.userInsideId)
-                        .set(student)
-
-                    //Agregar subcoleción de eventos al estudiante.
-                    db.collection("students").document(MyApplication.userInsideId)
-                        .collection("studentEvents")
-                        .add(dummyEvent)
-
 
                     if(MyApplication.userInsideId=="") {
-                        //Agregar a Cloud Firestore.
-                        db.collection("students").document(mFirebaseAuth!!.currentUser!!.uid)
-                            .set(student)
+//                        db.collection("users").document(mFirebaseAuth!!.currentUser!!.uid)
+//                            .set(newStudent);
 
-                        //Agregar subcoleción de eventos al estudiante.
-                        db.collection("students").document(mFirebaseAuth!!.currentUser!!.uid)
-                            .collection("studentEvents")
-                            .add(dummyEvent)
-
+                        //Agrega el nuevo estudiante a la colección "students" de Cloud Firestore.
+                        db.collection("students").add(newStudent)
                     }else{
-                        db.collection("students").document(mFirebaseAuth!!.currentUser!!.uid)
-                            .set(student)
-
-                        //Agregar subcoleción de eventos al estudiante.
-                        db.collection("students").document(mFirebaseAuth!!.currentUser!!.uid)
-                            .collection("studentEvents")
-                            .add(dummyEvent)
+                        db.collection("users").document(MyApplication.userInsideId)
+                            .set(newStudent)
                     }
                     Toast.makeText(this@StudentRegisterActivity,"$edit_message", Toast.LENGTH_LONG).show()
                     MyApplication.userInsideId=""
                     val intent2 = Intent(this@StudentRegisterActivity, LoginActivity::class.java);
-                    startActivity(intent2)
+                    startActivity(intent2);
                 }
             }
             mFirebaseAuth.createUserWithEmailAndPassword(emailStr,passwordStr).addOnFailureListener() {
@@ -227,33 +200,12 @@ class StudentRegisterActivity : AppCompatActivity() {
                 mFirebaseAuth.currentUser!!.updateEmail(emailStr)
                 mFirebaseAuth.currentUser!!.updatePassword(passwordStr)
                 var newStudent: Student = Student(nameStr,emailStr, career, ArrayList(), "")
-
-                //Nuevo estudiante para Cloud Firestore.
-                val student = HashMap<String,Any>()
-                student["name"] = nameStr
-                student["email"] = emailStr
-                student["career"] = career
-
-                //dummyEvent para poder crear subcolleccion de eventos.
-                val dummyEvent = HashMap<String, Any>()
-                dummyEvent["name"] = "Ejemplo"
-                dummyEvent["description"] = "Esto es un ejemplo."
-                dummyEvent["location"] = " "
-                dummyEvent["date"] = " "
-
-                //Agregar estudiante a colección de Users.
-                db.collection("students").document(MyApplication.userInsideId)
-                    .set(student)
-
-                //Agregar subcoleción de eventos al estudiante.
-                db.collection("students").document(MyApplication.userInsideId)
-                    .collection("studentEvents")
-                    .add(dummyEvent)
-
+                FirebaseFirestore.getInstance().collection("users").document(MyApplication.userInsideId)
+                    .set(newStudent)
                 Toast.makeText(this@StudentRegisterActivity,"$edit_message", Toast.LENGTH_LONG).show()
                 MyApplication.userInsideId=""
                 val intent2 = Intent(this@StudentRegisterActivity, LoginActivity::class.java)
-                startActivity(intent2)
+                startActivity(intent2);
             }
         }
 

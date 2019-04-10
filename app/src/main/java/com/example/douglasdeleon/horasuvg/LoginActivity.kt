@@ -24,6 +24,7 @@ import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
 import android.content.Intent
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.widget.Toast
 import com.example.douglasdeleon.horasuvg.Model.MyApplication
 import com.example.douglasdeleon.horasuvg.Model.UserInside
@@ -212,8 +213,8 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
                             var user:UserInside = documentSnapshot.toObject(UserInside::class.java)!!
                             MyApplication.userInside = user
 
-                            val intent: Intent = Intent(this, LoggedIn::class.java)
-                            startActivity(intent)
+                            val intent: Intent = Intent(this, LoggedIn::class.java);
+                            startActivity(intent);
                     }
                         .addOnFailureListener { exception ->
 
