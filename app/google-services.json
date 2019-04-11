@@ -23,12 +23,8 @@
           }
         },
         {
-          "client_id": "717616572959-pt7h4k4gotko7017fmns8lkdnq6kd3ld.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.douglasdeleon.horasuvg",
-            "certificate_hash": "6f7c394a69631165376ba48212f74c93852977df"
-          }
+          "client_id": "717616572959-7718unjitod6dpq5csdjd244kso5ndv6.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -37,13 +33,20 @@
         }
       ],
       "services": {
+        "analytics_service": {
+          "status": 1
+        },
         "appinvite_service": {
+          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "717616572959-7718unjitod6dpq5csdjd244kso5ndv6.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
+        },
+        "ads_service": {
+          "status": 2
         }
       }
     }
