@@ -1,25 +1,23 @@
 package com.example.douglasdeleon.horasuvg
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.example.douglasdeleon.horasuvg.Model.MyApplication
+import com.example.douglasdeleon.horasuvg.Model.Event
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.admin_create_event.*
 
 class AdminCreateEvent: Fragment() {
 
-    private var mFirebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private var mFirebaseAuth: FirebaseAuth? = null
     var thisContext: Context? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -27,6 +25,9 @@ class AdminCreateEvent: Fragment() {
         //change R.layout.yourlayoutfilename for each of your fragments
         thisContext = container!!.context
         return inflater.inflate(com.example.douglasdeleon.horasuvg.R.layout.admin_create_event, container, false)
+
+        //Inicializa FireBase
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
     }
 
@@ -80,27 +81,8 @@ class AdminCreateEvent: Fragment() {
             builder.show()
 
         } else {
-//            var newEvent: Event = Event(nameStr,descriptionStr,placeStr,dateStr)
-
-            //Probar con HashMap.
-            val evento = HashMap<String, Any>()
-            evento["name"] = nameStr
-            evento["description"] = descriptionStr
-            evento["location"] = placeStr
-            evento["date"] = dateStr
-
-            //Agregar el evento a collección "events" con ID [nameStr].
-            db.collection("events")
-                .document(nameStr)
-                .set(evento)
-                .addOnSuccessListener { Log.d(TAG, "Se agregó el evento con éxito." ) }
-                .addOnFailureListener {e -> Log.d(TAG, "Ocurrió un error.", e) }
-
-            //Agregar evento a subcolección de eventos del Admin que lo creó.
-            db.collection("administrators").document(MyApplication.userInsideId)
-                .collection("adminEvents")
-                .document(nameStr)
-                .set(evento)
+            var newEvent: Event = Event(nameStr,descriptionStr,placeStr,dateStr)
+            FirebaseFirestore.getInstance().collection("events").document().set(newEvent)
 
             var fragmentManager: FragmentManager = fragmentManager!!
             var fragment: Fragment = Start()
